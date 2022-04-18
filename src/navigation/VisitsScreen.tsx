@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, View, Text } from 'react-native';
 
-class NotHomeScreen extends React.Component {
+class VisitsScreen extends React.Component {
   render() {
     return (
       <View>
@@ -11,4 +11,4 @@ class NotHomeScreen extends React.Component {
   }
 }
 
-export default NotHomeScreen;
+export default VisitsScreen;
