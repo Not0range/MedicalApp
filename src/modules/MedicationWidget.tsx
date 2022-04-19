@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FlatList, Text, TouchableOpacity } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity } from 'react-native';
 import { CommonStyles } from '../Styles.g'
 
 interface IProps {
@@ -23,10 +23,15 @@ class MedicationWidget extends React.Component<IProps, IState> {
       >
         <Text style={CommonStyles.headerText}>Приём лекарств</Text>
         <FlatList data={[
-          {text: "123"},
-          {text: "321"},
+          {title: "Аквадетрим", remaining: "30 мин."},
+          {title: "Глюконат натрия", remaining: "2 ч."},
         ]}
-        renderItem={({item}) => <Text>{item.text}</Text>}/>
+        renderItem={({item}) => (
+        <View style={CommonStyles.columns}>
+          <Text style={CommonStyles.columnElement}>{item.title}</Text>
+          <Text>{item.remaining}</Text>
+        </View>
+        )}/>
       </TouchableOpacity>
     )
   }

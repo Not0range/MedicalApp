@@ -6,6 +6,8 @@ import MedicationWidget from '../modules/MedicationWidget';
 import MeasuringWidget from '../modules/MeasuringWidget';
 import VisitsWidget from '../modules/VisitsWidget';
 
+import { CommonStyles } from '../Styles.g'
+
 interface IState {
   hours: number;
 }
@@ -35,7 +37,7 @@ class HomeScreen extends React.Component<IScreen, IState> {
       greetings = "Доброй ночи!";
 
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={CommonStyles.screenContainer}>
         <Text style={styles.greetings}>{greetings}</Text>
         <MedicationWidget onPress={() => this.navigate("Medication")}/>
         <MeasuringWidget onPress={() => this.navigate("Measuring")}/>
@@ -46,10 +48,6 @@ class HomeScreen extends React.Component<IScreen, IState> {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    margin: 10,
-    marginHorizontal: 15,
-  },
   greetings: {
     fontWeight: 'bold',
     fontSize: 30,
