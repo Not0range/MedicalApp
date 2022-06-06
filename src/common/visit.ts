@@ -1,4 +1,8 @@
+import Contact from "./contact";
+import MinDate from "./minDate";
+
 export default interface Visit {
-    title: string;
-    date: string;
+    id: number;
+    doctor: Contact | undefined;
+    date: MinDate;
 }

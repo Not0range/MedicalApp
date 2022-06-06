@@ -2,12 +2,22 @@ import { StyleSheet } from "react-native";
 
 export const CommonStyles = StyleSheet.create({
   screenContainer: {
+    flex: 1,
     margin: 5,
-    marginHorizontal: 5,
+    marginHorizontal: 5
   },
   headerText: {
     fontWeight: 'bold',
     fontSize: 20,
+  },
+  text: {
+    fontSize: 16
+  },
+  input: {
+    borderColor: 'black', 
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 5
   },
   container: {
     marginTop: 15,
@@ -24,5 +34,18 @@ export const CommonStyles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 'bold',
+  },
+  overlay: {
+    flex: 1,
+    paddingLeft: 50,
+    paddingRight: 50,
+    backgroundColor: 'white'
+  },
+  overlayContainer: {
+    flex: 1, 
+    justifyContent: 'center', 
+    alignContent: 'center', 
+    marginHorizontal: 50, 
+    marginVertical: 50, 
   }
 });

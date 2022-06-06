@@ -2,11 +2,12 @@ import * as React from 'react';
 import { ScrollView, Text, StyleSheet } from 'react-native';
 import IScreen from '../common/screen'
 
-import MedicationWidget from '../modules/MedicationWidget';
-import MeasuringWidget from '../modules/MeasuringWidget';
-import VisitsWidget from '../modules/VisitsWidget';
+import MedicationsWidget from '../modules/widgets/MedicationsWidget';
+import MeasuringWidget from '../modules/widgets/MeasuringWidget';
+import VisitsWidget from '../modules/widgets/VisitsWidget';
 
 import { CommonStyles } from '../Styles.g'
+import moment from 'moment';
 
 interface IState {
   hours: number;
@@ -16,16 +17,12 @@ class HomeScreen extends React.Component<IScreen, IState> {
   constructor(props: IScreen) {
     super(props);
     this.state = {
-      hours: new Date().getHours()
+      hours: moment().get('hours')
     };
   }
 
-  navigate(screen: string) {
-    this.props.navigation.navigate(screen);
-  }
-
   render() {
-    const {hours} = this.state;
+    const { hours } = this.state;
     let greetings;
     if (hours >= 6 && hours < 12)
       greetings = "Доброе утро!";
@@ -39,11 +36,15 @@ class HomeScreen extends React.Component<IScreen, IState> {
     return (
       <ScrollView style={CommonStyles.screenContainer}>
         <Text style={styles.greetings}>{greetings}</Text>
-        <MedicationWidget onPress={() => this.navigate("Medication")}/>
-        <MeasuringWidget onPress={() => this.navigate("Measuring")}/>
-        <VisitsWidget onPress={() => this.navigate("Visits")}/>
+        <MedicationsWidget onPress={() => this.navigate("Medications")} />
+        <MeasuringWidget onPress={() => this.navigate('Measurings')} />
+        <VisitsWidget onPress={() => this.navigate('Visits')} />
       </ScrollView>
     )
+  }
+
+  private navigate(screen: string) {
+    this.props.navigation.navigate(screen);
   }
 }
 

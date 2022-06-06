@@ -1,6 +1,6 @@
-import Time from "./time";
+import { Times } from "./time";
 
-export default interface Medication {
+export default interface Medication extends Times {
+    id: number;
     title: string;
-    times: Time[];
 }
