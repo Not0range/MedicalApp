@@ -76,7 +76,7 @@ class VisitModal extends React.Component<IProps, IState> {
           <View style={CommonStyles.overlayContainer}>
             <View style={{backgroundColor: 'white', borderColor: 'black', 
             borderWidth: 2, borderRadius: 10}}>
-              <FlatList 
+              {this.props.doctors.length > 0 ?<FlatList 
               data={this.props.doctors}
               renderItem={({item}) => 
                 <TouchableOpacity 
@@ -89,7 +89,12 @@ class VisitModal extends React.Component<IProps, IState> {
                     {`${item.name}, ${item.position}`}
                   </Text>
                 </TouchableOpacity>}
-              />
+              /> : 
+              <View>
+                  <Text style={[CommonStyles.text, {padding: 10}]}>
+                    Необходимо предварительно добавить врачей в списке контактов
+                  </Text>
+                </View>}
             </View>
           </View>
         </Modal>
