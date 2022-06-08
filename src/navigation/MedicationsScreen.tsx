@@ -9,10 +9,9 @@ import { CommonStyles } from '../Styles.g'
 import { connect, ConnectedProps } from 'react-redux';
 import { RootState, AppDispatch } from '../modules/store';
 import IScreen from '../common/screen';
-import IStack from '../common/stack';
 import IEmpty from '../common/empty';
 
-type IProps = ReduxProps & IScreen & IStack;
+type IProps = ReduxProps & IScreen;
 
 class MedicationsScreen extends React.Component<IProps, IEmpty> {
   constructor(props: IProps){
@@ -53,7 +52,7 @@ class MedicationsScreen extends React.Component<IProps, IEmpty> {
 
   private addMed(): void {
     this.props.setCurrent({ id: -1, title: '', times: [] });
-    this.props.route.params.stack.navigate('MedicationModal')
+    this.props.navigation.navigate('MedicationModal')
   }
 }
 

@@ -35,7 +35,7 @@ class MedicationsWidget extends React.Component<IProps, IState> {
         {nearest.length ? nearest.map(item => (
           <View key={item.title} style={CommonStyles.columns}>
             <Text style={CommonStyles.columnElement}>{item.title}</Text>
-            <Text>{item.remainedStr}</Text>
+            <Text>Через {item.remainedStr}</Text>
           </View>
         )) : (
           <Text>В ближайшее время приём лекарств не требуется</Text>

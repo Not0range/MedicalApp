@@ -6,6 +6,7 @@ import IScreen from '../../common/screen';
 import { push, setCurrent, remove } from '../../modules/slices/contactsSlice';
 import { AppDispatch, RootState } from '../../modules/store';
 import { CommonStyles } from '../../Styles.g';
+import * as fs from '../../fs'
 
 interface IState {
   readonly: boolean,
@@ -115,6 +116,8 @@ class ContactModal extends React.Component<IProps, IState> {
         tel: this.props.current.tel.trim(),
         workTel: this.props.current.workTel.trim()
     });
+    fs.writeSettings();
+    fs.writeContacts();
     this.props.navigation.goBack();
   }
 }

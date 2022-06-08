@@ -4,9 +4,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { connect, ConnectedProps } from 'react-redux';
 import Contact from '../common/contact';
 
-import IEmpty from '../common/empty';
 import IScreen from '../common/screen';
-import IStack from '../common/stack';
 import { push, setCurrent } from '../modules/slices/contactsSlice';
 import { AppDispatch, RootState } from '../modules/store';
 
@@ -18,7 +16,7 @@ interface IState {
   subscription: NativeEventSubscription | undefined
 }
 
-type IProps = ReduxProps & IScreen & IStack;
+type IProps = ReduxProps & IScreen;
 
 class ContactsScreen extends React.Component<IProps, IState> {
   constructor(props: IProps){
@@ -89,7 +87,7 @@ class ContactsScreen extends React.Component<IProps, IState> {
 
   private addCont(): void {
     this.props.setCurrent({ id: -1, name: '', position: '', tel: '', workTel: '' });
-    this.props.route.params.stack.navigate('ContactModal')
+    this.props.navigation.navigate('ContactModal')
   }
   private backHandler(): boolean {
     if (this.state.modalVisible) {

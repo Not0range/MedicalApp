@@ -3,9 +3,7 @@ import * as React from 'react';
 import { TouchableOpacity, FlatList, View, Text, Button, Linking, Modal, BackHandler, NativeEventSubscription } from 'react-native';
 import { connect, ConnectedProps } from 'react-redux';
 
-import IEmpty from '../common/empty';
 import IScreen from '../common/screen';
-import IStack from '../common/stack';
 import Visit from '../common/visit';
 import { push, setCurrent } from '../modules/slices/visitsSlice';
 import { AppDispatch, RootState } from '../modules/store';
@@ -18,7 +16,7 @@ interface IState {
   subscription: NativeEventSubscription | undefined
 }
 
-type IProps = ReduxProps & IScreen & IStack;
+type IProps = ReduxProps & IScreen;
 
 class VisitsScreen extends React.Component<IProps, IState> {
   constructor(props: IProps){
@@ -106,7 +104,7 @@ class VisitsScreen extends React.Component<IProps, IState> {
         hours: 0,
         minutes: 0
       }}});
-    this.props.route.params.stack.navigate('VisitModal')
+    this.props.navigation.navigate('VisitModal')
   }
   private backHandler(): boolean {
     if (this.state.modalVisible) {

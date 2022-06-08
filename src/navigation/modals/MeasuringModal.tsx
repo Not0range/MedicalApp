@@ -6,6 +6,7 @@ import IScreen from '../../common/screen';
 import { push, setCurrent, remove } from '../../modules/slices/measuringsSlice';
 import { AppDispatch, RootState } from '../../modules/store';
 import { CommonStyles } from '../../Styles.g';
+import * as fs from '../../fs'
 
 interface IState {
   readonly: boolean,
@@ -153,6 +154,8 @@ class MeasuringModal extends React.Component<IProps, IState> {
       Alert.alert('Ошибка', 'Запись с таким именем уже существует');
       return;
     }
+    fs.writeSettings();
+    fs.writeMeasurings();
     this.props.push({ ...this.props.current, title: this.props.current.title.trim() });
     this.props.navigation.goBack();
   }

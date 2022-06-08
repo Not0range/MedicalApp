@@ -8,6 +8,7 @@ import Visit from '../../common/visit';
 import { push, setCurrent, remove } from '../../modules/slices/visitsSlice';
 import { AppDispatch, RootState } from '../../modules/store';
 import { CommonStyles } from '../../Styles.g';
+import * as fs from '../../fs'
 
 interface IState {
   readonly: boolean;
@@ -269,6 +270,8 @@ class VisitModal extends React.Component<IProps, IState> {
       Alert.alert('Ошибка', 'Все поля должны быть заполнены');
       return;
     }
+    fs.writeSettings();
+    fs.writeVisits();
     this.props.push(this.props.current);
     this.props.navigation.goBack();
   }

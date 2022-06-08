@@ -5,13 +5,12 @@ import { connect, ConnectedProps } from 'react-redux';
 import IEmpty from '../common/empty';
 import Measuring from '../common/measuring';
 import IScreen from '../common/screen';
-import IStack from '../common/stack';
 import { push, setCurrent } from '../modules/slices/measuringsSlice';
 import { AppDispatch, RootState } from '../modules/store';
 
 import { CommonStyles } from '../Styles.g'
 
-type IProps = ReduxProps & IScreen & IStack;
+type IProps = ReduxProps & IScreen;
 
 class MeasuringsScreen extends React.Component<IProps, IEmpty> {
   constructor(props: IProps){
@@ -52,7 +51,7 @@ class MeasuringsScreen extends React.Component<IProps, IEmpty> {
 
   private addMeas(): void {
     this.props.setCurrent({ id: -1, title: '', times: [] });
-    this.props.route.params.stack.navigate('MeasuringModal')
+    this.props.navigation.navigate('MeasuringModal')
   }
 }
 
