@@ -154,9 +154,9 @@ class MeasuringModal extends React.Component<IProps, IState> {
       Alert.alert('Ошибка', 'Запись с таким именем уже существует');
       return;
     }
+    this.props.push({ ...this.props.current, title: this.props.current.title.trim() });
     fs.writeSettings();
     fs.writeMeasurings();
-    this.props.push({ ...this.props.current, title: this.props.current.title.trim() });
     this.props.navigation.goBack();
   }
 }

@@ -270,9 +270,9 @@ class VisitModal extends React.Component<IProps, IState> {
       Alert.alert('Ошибка', 'Все поля должны быть заполнены');
       return;
     }
+    this.props.push(this.props.current);
     fs.writeSettings();
     fs.writeVisits();
-    this.props.push(this.props.current);
     this.props.navigation.goBack();
   }
 }
