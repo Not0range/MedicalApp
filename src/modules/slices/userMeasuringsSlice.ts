@@ -1,28 +1,36 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import Medication from '../../common/medication';
+import moment from 'moment';
+import UserMeasuring from '../../common/userMeasuring';
+import UserMedication from '../../common/userMedication';
 import { AppDispatch, RootState } from '../store';
 
-interface IMedicationsState {
-  list: Medication[],
-  current: Medication,
+interface IUserMeasuringsState {
+  list: UserMeasuring[],
+  current: UserMeasuring,
   lastId: number
 }
 
-const initialState: IMedicationsState = {
+const initialState: IUserMeasuringsState = {
   list: [],
   current: {
     id: -1,
-    title: '',
-    times: []
+    type: '',
+    date: {
+      day: moment().get('d'),
+      month: moment().get('M'),
+      year: moment().get('y'),
+      time: { hours: 0, minutes: 0 }
+    },
+    value: [0]
   }, 
   lastId: 0
 }
 
 export const medicationsSlice = createSlice({
-  name: 'medications',
+  name: 'userMeasuring',
   initialState,
   reducers: {
-    push: (state, action: PayloadAction<Medication>) => {
+    push: (state, action: PayloadAction<UserMeasuring>) => {
       if (action.payload.id == -1) {
         state.list.push({ ...action.payload, id: state.lastId++ });
         return;
@@ -33,10 +41,10 @@ export const medicationsSlice = createSlice({
       else 
         state.list[m] = { ...action.payload };
     },
-    remove: (state, action: PayloadAction<Medication>) => {
+    remove: (state, action: PayloadAction<UserMeasuring>) => {
       state.list.splice(state.list.findIndex(t => t.id == action.payload.id), 1);
     },
-    setCurrent: (state, action: PayloadAction<Medication>) => {
+    setCurrent: (state, action: PayloadAction<UserMeasuring>) => {
       state.current = action.payload;
     },
     setLastId: (state, action: PayloadAction<number>) => {
@@ -46,5 +54,5 @@ export const medicationsSlice = createSlice({
 });
 
 export const { push, remove, setCurrent, setLastId } = medicationsSlice.actions;
-export const selectMedications = (state: RootState) => state.medications.list;
+export const selectMedications = (state: RootState) => state.userMeasurings.list;
 export default medicationsSlice.reducer;

@@ -36,7 +36,7 @@ export const contactsSlice = createSlice({
         state.list[m] = { ...action.payload };
     },
     remove: (state, action: PayloadAction<Contact>) => {
-      state.list.splice(state.list.indexOf(action.payload), 1);
+      state.list.splice(state.list.findIndex(t => t.id == action.payload.id), 1);
     },
     setCurrent: (state, action: PayloadAction<Contact>) => {
       state.current = action.payload;

@@ -35,7 +35,7 @@ export const measuringsSlice = createSlice({
         state.list[m] = { ...action.payload };
     },
     remove: (state, action: PayloadAction<Measuring>) => {
-      state.list.splice(state.list.indexOf(action.payload), 1);
+      state.list.splice(state.list.findIndex(t => t.id == action.payload.id), 1);
     },
     setCurrent: (state, action: PayloadAction<Measuring>) => {
       state.current = action.payload;

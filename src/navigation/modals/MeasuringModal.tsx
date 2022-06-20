@@ -7,6 +7,9 @@ import { push, setCurrent, remove } from '../../modules/slices/measuringsSlice';
 import { AppDispatch, RootState } from '../../modules/store';
 import { CommonStyles } from '../../Styles.g';
 import * as fs from '../../fs'
+import notifee, { RepeatFrequency, TimestampTrigger, TriggerType } from '@notifee/react-native'
+import { getTodayTime } from '../../common/time';
+import moment from 'moment';
 
 interface IState {
   readonly: boolean,
@@ -107,6 +110,9 @@ class MeasuringModal extends React.Component<IProps, IState> {
                 {
                   text: 'Да',
                   onPress: () => {
+                    notifee.getTriggerNotificationIds().then(ids => 
+                      notifee.cancelTriggerNotifications(ids.filter(t => 
+                        t.startsWith(`mea${this.props.current.id}`))));
                     this.props.remove(this.props.current);
                     this.props.navigation.goBack();
                   }
@@ -155,9 +161,62 @@ class MeasuringModal extends React.Component<IProps, IState> {
       return;
     }
     this.props.push({ ...this.props.current, title: this.props.current.title.trim() });
+    this.setNotifications();
+
     fs.writeSettings();
     fs.writeMeasurings();
     this.props.navigation.goBack();
+  }
+  private async setNotifications() {
+    const ids = (await notifee.getTriggerNotificationIds())
+    .filter(t => t.startsWith(`mea${this.props.current.id}`));
+    if (ids.length > 0)
+      notifee.cancelTriggerNotifications(ids);
+
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+    let i = 0;
+    for (let t of this.props.current.times) {
+      let ts = getTodayTime(t);
+      if (ts < moment())
+        ts.add(1, 'day');
+      const trigger: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: ts.toDate().getTime(), 
+        repeatFrequency: RepeatFrequency.DAILY
+      };
+      await notifee.createTriggerNotification(
+        {
+          id: `mea${this.props.current.id}.${i++}`,
+          title: 'Выполнение измерений',
+          body: `Необходимо выполнить измерение: ${this.props.current.title}`,
+          android: {
+            channelId: channelId,
+            actions: [
+              {
+                title: 'Отметить',
+                pressAction: {
+                  id: 'mark-as-read'
+                },
+                input: {
+                  placeholder: "36,6 или 120/80",
+                },
+              }
+            ],
+            pressAction: {
+              id: 'default'
+            },
+            autoCancel: false
+          },
+          ios: {
+            //todo
+          }
+        },
+        trigger,
+      );
+    }
   }
 }
 

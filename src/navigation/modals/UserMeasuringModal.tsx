@@ -2,15 +2,13 @@ import moment from 'moment';
 import * as React from 'react'
 import { View, Text, TouchableOpacity, FlatList, Button, Alert, Modal, TextInput } from 'react-native'
 import { connect, ConnectedProps } from 'react-redux';
-import MinDate, { getMoment } from '../../common/minDate';
 import IScreen from '../../common/screen';
-import Visit from '../../common/visit';
-import { push, setCurrent, remove } from '../../modules/slices/visitsSlice';
+import { push, setCurrent, remove } from '../../modules/slices/userMeasuringsSlice';
 import { AppDispatch, RootState } from '../../modules/store';
 import { CommonStyles } from '../../Styles.g';
 import * as fs from '../../fs'
-import notifee, { RepeatFrequency, TimestampTrigger, TriggerType } from '@notifee/react-native'
-import { getTodayTime } from '../../common/time';
+import GetUnuquie from '../../common/getUnique';
+import UserMeasuring from '../../common/userMeasuring';
 
 interface IState {
   readonly: boolean;
@@ -19,13 +17,14 @@ interface IState {
   value: number;
   min: number;
   max: number;
-  doctorModalVisible: boolean;
+  measModalVisible: boolean;
   digitModalVisible: boolean;
+  valuesText: string;
 }
 
 type IProps = ReduxProps & IScreen
 
-class VisitModal extends React.Component<IProps, IState> {
+class UserMeasuringModal extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -35,14 +34,16 @@ class VisitModal extends React.Component<IProps, IState> {
       value: 0,
       min: 1,
       max: 12,
-      doctorModalVisible: false,
-      digitModalVisible: false
+      measModalVisible: false,
+      digitModalVisible: false,
+      valuesText: this.props.current.value.join('/')
     }
     this.props.navigation.setOptions({ 
       title: this.props.current.id != -1 ? 'Просмотр' : 'Добавление'
     });
   }
   render() {
+    const meds = GetUnuquie(this.props.measurings.map(t => t.title));
     return (
       <View style={CommonStyles.screenContainer}>
         <Modal visible={this.state.digitModalVisible} transparent={true}>
@@ -68,33 +69,33 @@ class VisitModal extends React.Component<IProps, IState> {
           </View>
         </Modal>
 
-        <Modal visible={this.state.doctorModalVisible} transparent={true}>
+        <Modal visible={this.state.measModalVisible} transparent={true}>
           <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, 
             backgroundColor: 'gray', opacity: 0.5}} 
             onStartShouldSetResponder={ev => { 
-              this.setState({ doctorModalVisible: false });
+              this.setState({ measModalVisible: false });
               return true;
             }} />
           <View style={CommonStyles.overlayContainer}>
             <View style={{backgroundColor: 'white', borderColor: 'black', 
             borderWidth: 2, borderRadius: 10}}>
-              {this.props.doctors.length > 0 ?<FlatList 
-              data={this.props.doctors}
+              {meds.length > 0 ?<FlatList 
+              data={meds}
               renderItem={({item}) => 
                 <TouchableOpacity 
                 onPress={ev => {
-                  this.props.setCurrent({...this.props.current, doctor: item});
-                  this.setState({doctorModalVisible: false});
+                  this.props.setCurrent({...this.props.current, type: item});
+                  this.setState({measModalVisible: false});
                 }}
-                style={{backgroundColor: item == this.props.current.doctor ? 'cyan' : 'white'}}>
+                style={{backgroundColor: item == this.props.current.type ? 'cyan' : 'white'}}>
                   <Text style={[CommonStyles.text, {padding: 10}]}>
-                    {`${item.name}, ${item.position}`}
+                    {item}
                   </Text>
                 </TouchableOpacity>}
               /> : 
               <View>
                   <Text style={[CommonStyles.text, {padding: 10}]}>
-                    Необходимо предварительно добавить врачей в списке контактов
+                    Необходимо предварительно добавить измерения в расписание
                   </Text>
                 </View>}
             </View>
@@ -102,20 +103,20 @@ class VisitModal extends React.Component<IProps, IState> {
         </Modal>
         
         <View style={{flex: 1}}>
-          <Text style={CommonStyles.text}>Врач</Text>
+          <Text style={CommonStyles.text}>Лекарство</Text>
           <TouchableOpacity
             style={{padding: 10, borderColor: 'black', borderWidth: 1, borderRadius: 5}}
             onPress={ev => {
               if (!this.state.readonly)
-                this.setState({doctorModalVisible: true});
+                this.setState({measModalVisible: true});
             }}>
             <Text style={CommonStyles.text}>
-              {this.props.current.doctor ? 
-              `${this.props.current.doctor.name}, ${this.props.current.doctor.position}` :
+              {this.props.current.type ? 
+              `${this.props.current.type}` :
               'Не выбрано'}
             </Text>
           </TouchableOpacity>
-          <Text style={CommonStyles.text}>Дата посещения</Text>
+          <Text style={CommonStyles.text}>Дата приёма</Text>
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
             style={{margin: 10}}
@@ -170,7 +171,7 @@ class VisitModal extends React.Component<IProps, IState> {
             </TouchableOpacity>
           </View>
           <View style={{flexDirection: 'row', marginHorizontal: 5}}>
-          <TextInput 
+            <TextInput 
               value={`${this.props.current.date.time.hours}`}
               editable={!this.state.readonly}
               onChangeText={(text => {
@@ -204,6 +205,14 @@ class VisitModal extends React.Component<IProps, IState> {
               style={[CommonStyles.text, CommonStyles.input, {flexGrow: 1, padding: 0}]}
             />
           </View>
+          <Text style={CommonStyles.text}>Значение</Text>
+          <TextInput 
+              value={`${this.state.valuesText}`}
+              editable={!this.state.readonly}
+              onChangeText={(text => this.setState({valuesText: text}))}
+              placeholder="36,6 или 120/80"
+              style={[CommonStyles.text, CommonStyles.input, {padding: 0}]}
+            />
         </View>
         {this.state.readonly ?
         <View style={{marginHorizontal: 5}}>
@@ -220,11 +229,8 @@ class VisitModal extends React.Component<IProps, IState> {
                 {
                   text: 'Да',
                   onPress: () => {
-                    notifee.getTriggerNotificationIds().then(ids => 
-                      notifee.cancelTriggerNotifications(ids.filter(t => 
-                        t.startsWith(`vis${this.props.current.id}`))));
                     this.props.remove(this.props.current);
-                    this.props.navigation.navigate('Visits');
+                    this.props.navigation.navigate('UserMeasuringsTab');
                   }
                 },
                 {
@@ -276,92 +282,46 @@ class VisitModal extends React.Component<IProps, IState> {
     this.setState({digitModalVisible: false});
   }
   private save() {
-    if (this.props.current.doctor === undefined) {
+    if (this.props.current.type.trim() == '' || this.state.valuesText.trim() == '') {
       Alert.alert('Ошибка', 'Все поля должны быть заполнены');
       return;
     }
-    this.props.push(this.props.current);
-    this.setNotifications();
-    fs.writeSettings();
-    fs.writeVisits();
-    this.props.navigation.navigate('Visits');
-  }
-  private async setNotifications() {
-    const ids = (await notifee.getTriggerNotificationIds())
-    .filter(t => t.startsWith(`vis${this.props.current.id}`));
-    if (ids.length > 0)
-      notifee.cancelTriggerNotifications(ids);
+    if (!/^[\d\.,]+(\/[\d\.,]+)*$/.test(this.state.valuesText.trim())) {
+      Alert.alert('Ошибка', 'Поле "Значение" заполенено неверно');
+      return;
+    }
+    const values = this.state.valuesText.trim().replace(/,/, '.').split('/').map(t => +t);
+    if (values.some(t => isNaN(t))) {
+      Alert.alert('Ошибка', 'Поле "Значение" заполенено неверно');
+      return;
+    }
 
-    const channelId = await notifee.createChannel({
-      id: 'default',
-      name: 'Default Channel',
+    this.props.push({
+      ...this.props.current, 
+      type: this.props.current.type.trim(),
+      value: values
     });
-    const date = this.props.current.date;
-    const prev = getMoment(date).subtract(1, 'day').hour(12).minute(0);
-    if (prev > moment()) {
-      const trigger: TimestampTrigger = {
-        type: TriggerType.TIMESTAMP,
-        timestamp: prev.toDate().getTime(), 
-        repeatFrequency: RepeatFrequency.DAILY
-      };
-      await notifee.createTriggerNotification(
-        {
-          id: `vis${this.props.current.id}.0`,
-          title: 'Посещение врача',
-          body: `Завтра приём у врача: ${this.props.current.doctor?.name}, ${this.props.current.doctor?.position}`,
-          android: {
-            channelId: channelId,
-            pressAction: {
-              id: 'default'
-            }
-          },
-          ios: {
-            //todo
-          }
-        },
-        trigger,
-      );
-    }
-    const current = getMoment(date).subtract(1, 'h');
-    if (current > moment()) {
-      const trigger: TimestampTrigger = {
-        type: TriggerType.TIMESTAMP,
-        timestamp: current.toDate().getTime(), 
-        repeatFrequency: RepeatFrequency.DAILY
-      };
-      await notifee.createTriggerNotification(
-        {
-          id: `vis${this.props.current.id}.1`,
-          title: 'Посещение врача',
-          body: `Через час приём у врача: ${this.props.current.doctor?.name}, ${this.props.current.doctor?.position}`,
-          android: {
-            channelId: channelId
-          },
-          ios: {
-            //todo
-          }
-        },
-        trigger,
-      );
-    }
+    fs.writeSettings();
+    fs.writeUserMeas();
+    this.props.navigation.navigate('UserMeasuringsTab');
   }
 }
 
 const mapState = (state: RootState) => ({
-  visits: state.visits.list,
-  current: state.visits.current,
-  lastId: state.visits.lastId,
-  doctors: state.contacts.list
+  userMeasurings: state.userMeasurings.list,
+  current: state.userMeasurings.current,
+  lastId: state.userMeasurings.lastId,
+  measurings: state.measurings.list
 });
 
 const mapDispatch = (dispatch: AppDispatch) => ({
-  setCurrent: (v: Visit) => dispatch(setCurrent(v)),
-  push: (v: Visit) => dispatch(push(v)),
-  remove: (v: Visit) => dispatch(remove(v))
+  setCurrent: (m: UserMeasuring) => dispatch(setCurrent(m)),
+  push: (m: UserMeasuring) => dispatch(push(m)),
+  remove: (m: UserMeasuring) => dispatch(remove(m))
 })
 
 type ReduxProps = ConnectedProps<typeof connector>
 
 const connector = connect(mapState, mapDispatch);
 
-export default connector(VisitModal);
+export default connector(UserMeasuringModal);

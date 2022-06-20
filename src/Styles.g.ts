@@ -28,6 +28,7 @@ export const CommonStyles = StyleSheet.create({
   },
   columns: {
     flexDirection: "row",
+    marginHorizontal: 3
   },
   columnElement: {
     flexGrow: 1,
@@ -47,5 +48,10 @@ export const CommonStyles = StyleSheet.create({
     alignContent: 'center', 
     marginHorizontal: 50, 
     marginVertical: 50, 
+  },
+  table: {
+    borderColor: 'black',
+    borderWidth: 1,
+    padding: 10,
   }
 });

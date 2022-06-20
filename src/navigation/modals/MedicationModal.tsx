@@ -7,6 +7,9 @@ import { push, setCurrent, remove } from '../../modules/slices/medicationsSlice'
 import { AppDispatch, RootState } from '../../modules/store';
 import { CommonStyles } from '../../Styles.g';
 import * as fs from '../../fs'
+import notifee, { RepeatFrequency, TimestampTrigger, TriggerType } from '@notifee/react-native'
+import { getTodayTime } from '../../common/time';
+import moment from 'moment';
 
 interface IState {
   readonly: boolean,
@@ -106,6 +109,9 @@ class MedicationModal extends React.Component<IProps, IState> {
                 {
                   text: 'Да',
                   onPress: () => {
+                    notifee.getTriggerNotificationIds().then(ids => 
+                      notifee.cancelTriggerNotifications(ids.filter(t => 
+                        t.startsWith(`med${this.props.current.id}`))));
                     this.props.remove(this.props.current);
                     this.props.navigation.goBack();
                   }
@@ -153,10 +159,60 @@ class MedicationModal extends React.Component<IProps, IState> {
       Alert.alert('Ошибка', 'Запись с таким именем уже существует');
       return;
     }
+
     this.props.push({ ...this.props.current, title: this.props.current.title.trim() });
+    this.setNotifications();
+
     fs.writeSettings();
     fs.writeMedications();
     this.props.navigation.goBack();
+  }
+  private async setNotifications() {
+    const ids = (await notifee.getTriggerNotificationIds())
+    .filter(t => t.startsWith(`med${this.props.current.id}`));
+    if (ids.length > 0)
+      notifee.cancelTriggerNotifications(ids);
+
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+    let i = 0;
+    for (let t of this.props.current.times) {
+      let ts = getTodayTime(t);
+      if (ts < moment())
+        ts.add(1, 'day');
+      const trigger: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: ts.toDate().getTime(), 
+        repeatFrequency: RepeatFrequency.DAILY
+      };
+      await notifee.createTriggerNotification(
+        {
+          id: `med${this.props.current.id}.${i++}`,
+          title: 'Приём лекарств',
+          body: `Необходимо принять лекарство: ${this.props.current.title}`,
+          android: {
+            channelId: channelId,
+            actions: [
+              {
+                title: 'Отметить',
+                pressAction: {
+                  id: 'mark-as-read'
+                }
+              }
+            ],
+            pressAction: {
+              id: 'default'
+            }
+          },
+          ios: {
+            //todo
+          }
+        },
+        trigger,
+      );
+    }
   }
 }
 

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { TouchableOpacity, FlatList, View, Text, Button, Touchable, TouchableWithoutFeedback } from 'react-native';
+import { TouchableOpacity, FlatList, View, Text, Button } from 'react-native';
 
 import Medication from '../common/medication';
 
-import { push, setCurrent } from '../modules/slices/medicationsSlice';
+import { setCurrent } from '../modules/slices/medicationsSlice';
 
 import { CommonStyles } from '../Styles.g'
 import { connect, ConnectedProps } from 'react-redux';

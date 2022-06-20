@@ -18,5 +18,5 @@ export interface EventTime {
 export function getTodayTime(time: Time): moment.Moment {
   return moment().hours(time.hours)
         .minutes(time.minutes)
-        .seconds(0)
+        .seconds(0).millisecond(0);
 }
