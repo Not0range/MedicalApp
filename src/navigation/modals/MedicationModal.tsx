@@ -204,7 +204,8 @@ class MedicationModal extends React.Component<IProps, IState> {
             ],
             pressAction: {
               id: 'default'
-            }
+            },
+            smallIcon: 'notification_icon'
           },
           ios: {
             //todo

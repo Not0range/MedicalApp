@@ -208,7 +208,8 @@ class MeasuringModal extends React.Component<IProps, IState> {
             pressAction: {
               id: 'default'
             },
-            autoCancel: false
+            autoCancel: false,
+            smallIcon: 'notification_icon'
           },
           ios: {
             //todo

@@ -313,7 +313,8 @@ class VisitModal extends React.Component<IProps, IState> {
             channelId: channelId,
             pressAction: {
               id: 'default'
-            }
+            },
+            smallIcon: 'notification_icon'
           },
           ios: {
             //todo
