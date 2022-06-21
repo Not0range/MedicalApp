@@ -20,7 +20,7 @@ class UserMedicationsTab extends React.Component<IProps, IEmpty> {
     return (
       <View style={CommonStyles.screenContainer}>
         <View style={CommonStyles.columns}>
-          <Text style={[CommonStyles.columnElement, CommonStyles.boldText, CommonStyles.text, CommonStyles.table]}>
+          <Text style={[CommonStyles.boldText, CommonStyles.text, CommonStyles.table, {width: '60%'}]}>
             Лекарство
           </Text>
           <Text style={[CommonStyles.boldText, CommonStyles.text, CommonStyles.table, {width: '40%'}]}>
@@ -35,7 +35,7 @@ class UserMedicationsTab extends React.Component<IProps, IEmpty> {
               this.props.setCurrent(this.props.userMedications[index]);
               this.props.navigation.navigate('UserMedModal');
             }}>
-            <Text style={[CommonStyles.columnElement, CommonStyles.boldText, CommonStyles.text, CommonStyles.table]}>
+            <Text style={[CommonStyles.boldText, CommonStyles.text, CommonStyles.table, {width: '60%'}]}>
               {item.title}
             </Text>
             <Text style={[CommonStyles.boldText, CommonStyles.text, CommonStyles.table, {width: '40%'}]}>

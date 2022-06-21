@@ -176,6 +176,7 @@ class MedicationModal extends React.Component<IProps, IState> {
     const channelId = await notifee.createChannel({
       id: 'default',
       name: 'Default Channel',
+      sound: 'default'
     });
     let i = 0;
     for (let t of this.props.current.times) {

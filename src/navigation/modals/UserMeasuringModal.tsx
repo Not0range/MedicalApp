@@ -103,7 +103,7 @@ class UserMeasuringModal extends React.Component<IProps, IState> {
         </Modal>
         
         <View style={{flex: 1}}>
-          <Text style={CommonStyles.text}>Лекарство</Text>
+          <Text style={CommonStyles.text}>Вид измерения</Text>
           <TouchableOpacity
             style={{padding: 10, borderColor: 'black', borderWidth: 1, borderRadius: 5}}
             onPress={ev => {
@@ -116,7 +116,7 @@ class UserMeasuringModal extends React.Component<IProps, IState> {
               'Не выбрано'}
             </Text>
           </TouchableOpacity>
-          <Text style={CommonStyles.text}>Дата приёма</Text>
+          <Text style={CommonStyles.text}>Дата измерения</Text>
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
             style={{margin: 10}}

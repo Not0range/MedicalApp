@@ -9,6 +9,7 @@ import IScreen from '../../common/screen';
 import IEmpty from '../../common/empty';
 import moment from 'moment';
 import UserMeasuring from '../../common/userMeasuring';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type IProps = ReduxProps & IScreen;
 
@@ -20,7 +21,7 @@ class UserMeasuringsTab extends React.Component<IProps, IEmpty> {
     return (
       <View style={CommonStyles.screenContainer}>
         <View style={CommonStyles.columns}>
-          <Text style={[CommonStyles.columnElement, CommonStyles.boldText, CommonStyles.text, CommonStyles.table]}>
+          <Text style={[CommonStyles.boldText, CommonStyles.text, CommonStyles.table, {width: '35%'}]}>
             Вид измерения
           </Text>
           <Text style={[CommonStyles.boldText, CommonStyles.text, CommonStyles.table, {width: '40%'}]}>
@@ -38,7 +39,8 @@ class UserMeasuringsTab extends React.Component<IProps, IEmpty> {
               this.props.setCurrent(this.props.userMeasurings[index]);
               this.props.navigation.navigate('UserMeasModal');
             }}>
-            <Text style={[CommonStyles.columnElement, CommonStyles.boldText, CommonStyles.text, CommonStyles.table]}>
+            <Text
+            style={[CommonStyles.boldText, CommonStyles.text, CommonStyles.table, {width: '35%'}]}>
               {item.type}
             </Text>
             <Text style={[CommonStyles.boldText, CommonStyles.text, CommonStyles.table, {width: '40%'}]}>

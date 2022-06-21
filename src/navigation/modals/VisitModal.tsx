@@ -295,6 +295,7 @@ class VisitModal extends React.Component<IProps, IState> {
     const channelId = await notifee.createChannel({
       id: 'default',
       name: 'Default Channel',
+      sound: 'default'
     });
     const date = this.props.current.date;
     const prev = getMoment(date).subtract(1, 'day').hour(12).minute(0);
