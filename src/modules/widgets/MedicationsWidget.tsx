@@ -48,12 +48,12 @@ class MedicationsWidget extends React.Component<IProps, IState> {
       this.forceUpdate();
       this.setState({
         timer: setTimeout(update, 
-          moment().seconds(0).add(1, 'minutes').diff(moment(), 'seconds'))
+          moment().seconds(0).add(1, 'minutes').diff(moment(), 'seconds') * 1000)
       });
     };
     this.setState({
       timer: setTimeout(update, 
-        moment().seconds(0).add(1, 'minutes').diff(moment(), 'seconds'))
+        moment().seconds(0).add(1, 'minutes').diff(moment(), 'seconds') * 1000)
     });
   }
   componentWillUnmount() {
@@ -66,9 +66,10 @@ class MedicationsWidget extends React.Component<IProps, IState> {
     let m: EventTime;
     let n = 0, t = 0, i = 0;
     for (let item of medications) {
-      for (i = 0; i < item.times.length; i++)
-        if (moment().diff(getTodayTime(item.times[i]), 'minutes') < 0)
+      for (i = 0; i < item.times.length; i++) {
+        if (moment().diff(getTodayTime(item.times[i]), 'minutes', true) < 0)
           break;
+      }
       if (i == item.times.length)
         continue;
   

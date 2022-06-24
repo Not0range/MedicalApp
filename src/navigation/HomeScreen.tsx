@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, Text, StyleSheet, AppState, NativeEventSubscription, ToastAndroid } from 'react-native';
+import { ScrollView, Text, StyleSheet, AppState, NativeEventSubscription, ToastAndroid, Appearance } from 'react-native';
 import IScreen from '../common/screen'
 import notifee, { AuthorizationStatus, EventType } from '@notifee/react-native'
 

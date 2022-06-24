@@ -66,7 +66,7 @@ class MeasuringWidget extends React.Component<IProps, IState> {
     let n = 0, t = 0, i = 0;
     for (let item of medications) {
       for (i = 0; i < item.times.length; i++)
-        if (moment().diff(getTodayTime(item.times[i]), 'minutes') < 0)
+        if (moment().diff(getTodayTime(item.times[i]), 'minutes', true) < 0)
           break;
       if (i == item.times.length)
         continue;
