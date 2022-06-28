@@ -220,6 +220,7 @@ class UserMedicationModal extends React.Component<IProps, IState> {
                   text: 'Да',
                   onPress: () => {
                     this.props.remove(this.props.current);
+                    fs.writeUserMed();
                     this.props.navigation.navigate('UserMedicationsTab');
                   }
                 },

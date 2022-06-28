@@ -109,10 +109,14 @@ class MedicationModal extends React.Component<IProps, IState> {
                 {
                   text: 'Да',
                   onPress: () => {
-                    notifee.getTriggerNotificationIds().then(ids => 
-                      notifee.cancelTriggerNotifications(ids.filter(t => 
-                        t.startsWith(`med${this.props.current.id}`))));
+                    notifee.getTriggerNotificationIds().then(ids => {
+                      const id = ids.filter(t => 
+                        t.startsWith(`med${this.props.current.id}`));
+                      if (id.length > 0)
+                        notifee.cancelTriggerNotifications(id);
+                    });
                     this.props.remove(this.props.current);
+                    fs.writeMedications();
                     this.props.navigation.goBack();
                   }
                 },
@@ -168,11 +172,17 @@ class MedicationModal extends React.Component<IProps, IState> {
     this.props.navigation.goBack();
   }
   private async setNotifications() {
-    const ids = (await notifee.getTriggerNotificationIds())
-    .filter(t => t.startsWith(`med${this.props.current.id}`));
-    if (ids.length > 0)
-      notifee.cancelTriggerNotifications(ids);
+    let cur_id = this.props.current.id;
+    if (cur_id != -1) {
+      const ids = (await notifee.getTriggerNotificationIds())
+      .filter(t => t.startsWith(`med${cur_id}`));
+      if (ids.length > 0)
+        notifee.cancelTriggerNotifications(ids);
+    }
+    else
+      cur_id = this.props.lastId;
 
+    console.log(`current after deleting triggers: ${await notifee.getTriggerNotificationIds()}`);
     const channelId = await notifee.createChannel({
       id: 'default',
       name: 'Default Channel',
@@ -190,7 +200,7 @@ class MedicationModal extends React.Component<IProps, IState> {
       };
       await notifee.createTriggerNotification(
         {
-          id: `med${this.props.current.id}.${i++}`,
+          id: `med${cur_id}.${i++}`,
           title: 'Приём лекарств',
           body: `Необходимо принять лекарство: ${this.props.current.title}`,
           android: {
@@ -215,6 +225,7 @@ class MedicationModal extends React.Component<IProps, IState> {
         trigger,
       );
     }
+    console.log(`current after added triggers: ${await notifee.getTriggerNotificationIds()}`);
   }
 }
 

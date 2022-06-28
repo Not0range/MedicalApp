@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { TouchableOpacity, FlatList, View, Text, Button, Modal, BackHandler, NativeEventSubscription, Linking } from 'react-native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { connect, ConnectedProps } from 'react-redux';
 import Contact from '../common/contact';
 
@@ -36,7 +35,7 @@ class ContactsScreen extends React.Component<IProps, IState> {
           <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, 
             backgroundColor: 'gray', opacity: 0.5}} 
             onStartShouldSetResponder={ev => { 
-              this.setState({ modalVisible: false });
+              this.setState({ modalVisible: false, current: -1 });
               return true;
             }} />
           <View style={{flex: 1, justifyContent: 'center', alignContent: 'center', marginHorizontal: 50}}>
@@ -44,7 +43,7 @@ class ContactsScreen extends React.Component<IProps, IState> {
               <TouchableOpacity style={{margin: 15}} onPress={ev => {
                 this.props.setCurrent(this.props.contacts[this.state.current]);
                 this.props.navigation.navigate('ContactModal');
-                this.setState({ modalVisible: false });
+                this.setState({ modalVisible: false, current: -1 });
               }}>
                 <Text style={CommonStyles.text}>Открыть</Text>
               </TouchableOpacity>
@@ -52,7 +51,7 @@ class ContactsScreen extends React.Component<IProps, IState> {
               <TouchableOpacity style={{margin: 15}} 
               onPress={ev => {
                 Linking.openURL(`tel:${this.props.contacts[this.state.current].tel}`);
-                this.setState({ modalVisible: false });
+                this.setState({ modalVisible: false, current: -1 });
               }}>
                 <Text style={CommonStyles.text}>Позвонить на личный номер</Text>
               </TouchableOpacity> : null}
@@ -60,7 +59,7 @@ class ContactsScreen extends React.Component<IProps, IState> {
               <TouchableOpacity style={{margin: 15}}
               onPress={ev => {
                 Linking.openURL(`tel:${this.props.contacts[this.state.current].workTel}`);
-                this.setState({ modalVisible: false });
+                this.setState({ modalVisible: false, current: -1 });
               }}>
                 <Text style={CommonStyles.text}>Позвонить на рабочий номер</Text>
               </TouchableOpacity> : null}

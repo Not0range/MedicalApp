@@ -110,10 +110,13 @@ class MeasuringModal extends React.Component<IProps, IState> {
                 {
                   text: 'Да',
                   onPress: () => {
-                    notifee.getTriggerNotificationIds().then(ids => 
-                      notifee.cancelTriggerNotifications(ids.filter(t => 
-                        t.startsWith(`mea${this.props.current.id}`))));
+                    notifee.getTriggerNotificationIds().then(ids => {
+                      const id = ids.filter(t => t.startsWith(`mea${this.props.current.id}`));
+                      if (id.length > 0)
+                        notifee.cancelTriggerNotifications();
+                    });
                     this.props.remove(this.props.current);
+                    fs.writeMeasurings();
                     this.props.navigation.goBack();
                   }
                 },
@@ -168,10 +171,15 @@ class MeasuringModal extends React.Component<IProps, IState> {
     this.props.navigation.goBack();
   }
   private async setNotifications() {
-    const ids = (await notifee.getTriggerNotificationIds())
-    .filter(t => t.startsWith(`mea${this.props.current.id}`));
-    if (ids.length > 0)
-      notifee.cancelTriggerNotifications(ids);
+    let cur_id = this.props.current.id;
+    if (cur_id != -1) {
+      const ids = (await notifee.getTriggerNotificationIds())
+      .filter(t => t.startsWith(`mea${cur_id}`));
+      if (ids.length > 0)
+        notifee.cancelTriggerNotifications(ids);
+    }
+    else
+      cur_id = this.props.lastId;
 
     const channelId = await notifee.createChannel({
       id: 'default',
@@ -190,7 +198,7 @@ class MeasuringModal extends React.Component<IProps, IState> {
       };
       await notifee.createTriggerNotification(
         {
-          id: `mea${this.props.current.id}.${i++}`,
+          id: `mea${cur_id}.${i++}`,
           title: 'Выполнение измерений',
           body: `Необходимо выполнить измерение: ${this.props.current.title}`,
           android: {

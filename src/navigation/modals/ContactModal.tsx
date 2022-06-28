@@ -54,6 +54,7 @@ class ContactModal extends React.Component<IProps, IState> {
           <TextInput 
             style={[CommonStyles.text, CommonStyles.input]}
             value={this.props.current.tel}
+            keyboardType="phone-pad"
             editable={!this.state.readonly}
             onChangeText={(text) => this.props.setCurrent({
               ...this.props.current,
@@ -64,6 +65,7 @@ class ContactModal extends React.Component<IProps, IState> {
           <TextInput 
             style={[CommonStyles.text, CommonStyles.input]}
             value={this.props.current.workTel}
+            keyboardType="phone-pad"
             editable={!this.state.readonly}
             onChangeText={(text) => this.props.setCurrent({
               ...this.props.current,
@@ -87,6 +89,7 @@ class ContactModal extends React.Component<IProps, IState> {
                   text: 'Да',
                   onPress: () => {
                     this.props.remove(this.props.current);
+                    fs.writeContacts();
                     this.props.navigation.goBack();
                   }
                 },

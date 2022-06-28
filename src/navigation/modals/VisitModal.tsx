@@ -220,10 +220,13 @@ class VisitModal extends React.Component<IProps, IState> {
                 {
                   text: 'Да',
                   onPress: () => {
-                    notifee.getTriggerNotificationIds().then(ids => 
-                      notifee.cancelTriggerNotifications(ids.filter(t => 
-                        t.startsWith(`vis${this.props.current.id}`))));
+                    notifee.getTriggerNotificationIds().then(ids => {
+                      const id = ids.filter(t => t.startsWith(`vis${this.props.current.id}`));
+                      if (id.length > 0)
+                        notifee.cancelTriggerNotifications(id)
+                    });
                     this.props.remove(this.props.current);
+                    fs.writeVisits();
                     this.props.navigation.navigate('Visits');
                   }
                 },
@@ -287,10 +290,15 @@ class VisitModal extends React.Component<IProps, IState> {
     this.props.navigation.navigate('Visits');
   }
   private async setNotifications() {
-    const ids = (await notifee.getTriggerNotificationIds())
-    .filter(t => t.startsWith(`vis${this.props.current.id}`));
-    if (ids.length > 0)
-      notifee.cancelTriggerNotifications(ids);
+    let cur_id = this.props.current.id;
+    if (cur_id != -1) {
+      const ids = (await notifee.getTriggerNotificationIds())
+      .filter(t => t.startsWith(`vis${this.props.current.id}`));
+      if (ids.length > 0)
+        notifee.cancelTriggerNotifications(ids);
+    }
+    else
+      cur_id = this.props.lastId;
 
     const channelId = await notifee.createChannel({
       id: 'default',
@@ -307,7 +315,7 @@ class VisitModal extends React.Component<IProps, IState> {
       };
       await notifee.createTriggerNotification(
         {
-          id: `vis${this.props.current.id}.0`,
+          id: `vis${cur_id}.0`,
           title: 'Посещение врача',
           body: `Завтра приём у врача: ${this.props.current.doctor?.name}, ${this.props.current.doctor?.position}`,
           android: {
@@ -333,7 +341,7 @@ class VisitModal extends React.Component<IProps, IState> {
       };
       await notifee.createTriggerNotification(
         {
-          id: `vis${this.props.current.id}.1`,
+          id: `vis${cur_id}.1`,
           title: 'Посещение врача',
           body: `Через час приём у врача: ${this.props.current.doctor?.name}, ${this.props.current.doctor?.position}`,
           android: {

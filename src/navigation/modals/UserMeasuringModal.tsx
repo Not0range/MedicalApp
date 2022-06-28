@@ -230,6 +230,7 @@ class UserMeasuringModal extends React.Component<IProps, IState> {
                   text: 'Да',
                   onPress: () => {
                     this.props.remove(this.props.current);
+                    fs.writeUserMeas();
                     this.props.navigation.navigate('UserMeasuringsTab');
                   }
                 },

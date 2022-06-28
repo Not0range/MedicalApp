@@ -43,7 +43,7 @@ class VisitsScreen extends React.Component<IProps, IState> {
               <TouchableOpacity style={{margin: 15}} onPress={ev => {
                 this.props.setCurrent(this.props.visits[this.state.current]);
                 this.props.navigation.navigate('VisitModal');
-                this.setState({ modalVisible: false });
+                this.setState({ modalVisible: false, current: -1 });
               }}>
                 <Text style={CommonStyles.text}>Открыть</Text>
               </TouchableOpacity>
@@ -51,7 +51,7 @@ class VisitsScreen extends React.Component<IProps, IState> {
               <TouchableOpacity style={{margin: 15}} 
               onPress={ev => {
                 Linking.openURL(`tel:${this.props.visits[this.state.current].doctor?.tel}`);
-                this.setState({ modalVisible: false });
+                this.setState({ modalVisible: false, current: -1 });
               }}>
                 <Text style={CommonStyles.text}>Позвонить на личный номер</Text>
               </TouchableOpacity> : null}
@@ -59,7 +59,7 @@ class VisitsScreen extends React.Component<IProps, IState> {
               <TouchableOpacity style={{margin: 15}}
               onPress={ev => {
                 Linking.openURL(`tel:${this.props.visits[this.state.current].doctor?.workTel}`);
-                this.setState({ modalVisible: false });
+                this.setState({ modalVisible: false, current: -1});
               }}>
                 <Text style={CommonStyles.text}>Позвонить на рабочий номер</Text>
               </TouchableOpacity> : null}
